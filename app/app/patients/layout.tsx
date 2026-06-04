@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Activity, Plus, Calendar, LogOut, FileText, MessageSquare, Menu } from "lucide-react";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import PatientChatbot from "./components/PatientChatbot";
 
 export default function PatientLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, loading } = useAuth();
@@ -109,6 +110,7 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
           {children}
         </div>
       </main>
+      <PatientChatbot />
     </div>
   );
 }

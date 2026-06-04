@@ -5,14 +5,21 @@ import PaymentSimulator from "../components/PaymentSimulator";
 import { getReports, bookLabTest } from "@/services/report.services";
 import { getClinicServices } from "@/services/clinicService.services";
 import { verifyPayment } from "@/services/payment.services";
-import { Clock, FileDown, ClipboardCheck } from "lucide-react";
+import { Clock, FileDown, ClipboardCheck, Sparkles, Globe } from "lucide-react";
 import { toast } from "sonner";
+import api from "@/lib/api";
 
 export default function LabTestPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
   const [showReportsOnly, setShowReportsOnly] = useState<boolean>(false);
   const [paymentData, setPaymentData] = useState<any | null>(null);
+
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [summaryLang, setSummaryLang] = useState<string>("Hindi");
+  const [summaryText, setSummaryText] = useState<string>("");
+  const [isSummarizing, setIsSummarizing] = useState<boolean>(false);
+  const [showSummaryModal, setShowSummaryModal] = useState<boolean>(false);
 
   useEffect(() => {
     fetchLabData();
@@ -62,6 +69,24 @@ export default function LabTestPage() {
     }
   };
 
+  const fetchSummary = async (reportId: string, lang: string) => {
+    try {
+      setIsSummarizing(true);
+      setSummaryText("");
+      const res = await api.post(`/reports/${reportId}/summarize`, {
+        language: lang
+      });
+      if (res.data?.warning) {
+        toast.warning(res.data.warning);
+      }
+      setSummaryText(res.data.summary || "No summary returned.");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to generate AI summary.");
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
   return (
     <PageWrapper
       title="Laboratory Tests & Reports"
@@ -107,6 +132,17 @@ export default function LabTestPage() {
                   </div>
                   {rep.fileUrl && (
                     <div className="border-t border-border/40 pt-3 mt-1 flex justify-end">
+                      <button
+                        onClick={() => {
+                          setSelectedReportId(rep._id);
+                          setSummaryLang("Hindi");
+                          setShowSummaryModal(true);
+                          fetchSummary(rep._id, "Hindi");
+                        }}
+                        className="bg-purple-500/10 text-purple-600 hover:bg-purple-500/20 text-xs px-3.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all mr-2"
+                      >
+                        <Sparkles className="size-3.5" /> AI Summary
+                      </button>
                       <a
                         href={rep.fileUrl}
                         target="_blank"
@@ -162,6 +198,71 @@ export default function LabTestPage() {
           onSubmit={handlePaymentConfirm}
         />
       </div>
+
+      {showSummaryModal && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-lg overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
+              <div className="flex items-center gap-2">
+                <Sparkles className="size-5 text-purple-500" />
+                <h3 className="font-bold text-base text-foreground">AI Report Scan & Summary</h3>
+              </div>
+              <button 
+                onClick={() => {
+                  setShowSummaryModal(false);
+                  setSelectedReportId(null);
+                  setSummaryText("");
+                }} 
+                className="text-muted-foreground hover:text-foreground text-sm font-semibold hover:underline"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="p-5 flex flex-col gap-4 overflow-y-auto">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-muted-foreground flex items-center gap-1">
+                  <Globe className="size-3.5" /> Select Summary Language
+                </label>
+                <select
+                  value={summaryLang}
+                  onChange={(e) => {
+                    const newLang = e.target.value;
+                    setSummaryLang(newLang);
+                    if (selectedReportId) {
+                      fetchSummary(selectedReportId, newLang);
+                    }
+                  }}
+                  className="bg-muted border border-border p-2.5 rounded-xl text-xs text-foreground outline-none focus:border-primary w-full"
+                >
+                  <option value="Hindi">Hindi (हिन्दी)</option>
+                  <option value="Bengali">Bengali (বাংলা)</option>
+                  <option value="English">English</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2 bg-muted/30 border border-border/50 p-4 rounded-xl min-h-[180px] justify-center">
+                {isSummarizing ? (
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground text-xs py-8">
+                    <div className="size-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <span>Scanning diagnostic file (PDF/Image) using Vision...</span>
+                  </div>
+                ) : summaryText ? (
+                  <div className="text-xs text-foreground whitespace-pre-line leading-relaxed font-medium">
+                    {summaryText}
+                  </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground text-center">No summary generated yet.</span>
+                )}
+              </div>
+
+              <div className="text-[10px] text-muted-foreground border-t border-border/40 pt-3">
+                🔬 <strong>Disclaimer:</strong> This is an AI-powered extraction and summary from the original diagnostic sheet. Please verify all key details and reference values with your clinical doctor.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </PageWrapper>
   );
 }

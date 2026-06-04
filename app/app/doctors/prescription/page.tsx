@@ -10,6 +10,31 @@ import { getClinicServices } from "@/services/clinicService.services";
 import { ArrowLeft, Plus, Trash2, Printer, CheckCircle, FileText, Activity, AlertCircle, Heart, User, Clipboard, Calendar } from "lucide-react";
 import { toast } from "sonner";
 
+const COMMON_MEDICINES = [
+  "Paracetamol 500mg", "Paracetamol 650mg", "Ibuprofen 400mg", "Amoxicillin 500mg", "Azithromycin 500mg",
+  "Pantoprazole 40mg", "Omeprazole 20mg", "Ranitidine 150mg", "Cetirizine 10mg", "Levocetirizine 5mg",
+  "Montelukast 10mg", "Amoxicillin + Clavulanic Acid 625mg", "Ciprofloxacin 500mg", "Ofloxacin 200mg",
+  "Metronidazole 400mg", "Metformin 500mg", "Metformin 1000mg", "Atorvastatin 10mg", "Atorvastatin 20mg",
+  "Amlodipine 5mg", "Losartan 50mg", "Telmisartan 40mg", "Clopidogrel 75mg", "Aspirin 75mg", "Aspirin 150mg",
+  "Paracetamol + Phenylephrine + Chlorpheniramine", "Dolo 650mg", "Combiflam", "Limcee 500mg",
+  "Vitamin D3 60K", "B-Complex with B12", "Zincovit", "Gabapentin 300mg", "Pregabalin 75mg",
+  "Diclofenac 50mg", "Aceclofenac 100mg", "Tramadol 50mg", "Salbutamol Inhaler", "Budecort Inhaler",
+  "Levosalbutamol", "Deriphyllin", "Prednisolone 5mg", "Methylprednisolone 8mg", "Deflazacort 6mg",
+  "Spironolactone 25mg", "Furosemide 40mg", "Torsemide 10mg", "Domperidone 10mg", "Ondansetron 4mg",
+  "Itopride 50mg", "Loperamide 2mg", "ORSL Hydration", "Econorm Sachet", "Lactobacillus Spores",
+  "Levofloxacin 500mg", "Doxycycline 100mg", "Minocycline 50mg", "Clindamycin 300mg", "Linezolid 600mg",
+  "Albendazole 400mg", "Fluconazole 150mg", "Itraconazole 100mg", "Terbinafine 250mg", "Aciclovir 400mg",
+  "Glimepiride 1mg", "Glimepiride 2mg", "Gliclazide 60mg", "Sitagliptin 50mg", "Vildagliptin 50mg",
+  "Dapagliflozin 10mg", "Empagliflozin 10mg", "Pioglitazone 15mg", "Insulin Glargine 100 IU",
+  "Rosuvastatin 10mg", "Rosuvastatin 20mg", "Fenofibrate 145mg", "Gemfibrozil 600mg",
+  "Enalapril 5mg", "Ramipril 5mg", "Lisinopril 10mg", "Valsartan 80mg", "Olmesartan 20mg",
+  "Carvedilol 6.25mg", "Metoprolol Succinate 25mg", "Metoprolol Succinate 50mg", "Nebivolol 5mg",
+  "Bisoprolol 5mg", "Spironolactone + Torsemide", "Hydrochlorothiazide 12.5mg", "Chlorthalidone 12.5mg",
+  "Nitroglycerin 2.6mg", "Isosorbide Mononitrate 30mg", "Warfarin 5mg", "Dabigatran 110mg",
+  "Rivaroxaban 15mg", "Apixaban 5mg", "Thyroxine 25mcg", "Thyroxine 50mcg", "Thyroxine 75mcg",
+  "Thyroxine 100mcg", "Carbimazole 5mg", "Methimazole 5mg", "Propylthiouracil 50mg"
+];
+
 function WritePrescriptionWorkspace() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,6 +45,9 @@ function WritePrescriptionWorkspace() {
   const [patientLogs, setPatientLogs] = useState<any | null>(null);
   const [availableTests, setAvailableTests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [isGeneratingAdvice, setIsGeneratingAdvice] = useState(false);
+  const [focusedMedIdx, setFocusedMedIdx] = useState<number | null>(null);
 
   // Vitals
   const [vitals, setVitals] = useState({
@@ -33,6 +61,7 @@ function WritePrescriptionWorkspace() {
   // Prescription Form
   const [prescriptionForm, setPrescriptionForm] = useState({
     diagnosis: "",
+    symptoms: "",
     advice: "",
     medicines: [{ name: "", dosage: "", frequency: "1-0-1", duration: "5 days", instructions: "After Food" }],
     recommendedTests: [] as string[],
@@ -112,6 +141,32 @@ function WritePrescriptionWorkspace() {
     setPrescriptionForm({ ...prescriptionForm, recommendedTests: updated });
   };
 
+  const handleGenerateAIAdvice = async () => {
+    if (!prescriptionForm.diagnosis.trim()) {
+      toast.error("Please enter a Diagnosis (disease name) first.");
+      return;
+    }
+    try {
+      setIsGeneratingAdvice(true);
+      const res = await api.post("/prescriptions/generate-advice", {
+        disease: prescriptionForm.diagnosis,
+        symptoms: prescriptionForm.symptoms
+      });
+      if (res.data?.warning) {
+        toast.warning(res.data.warning);
+      }
+      setPrescriptionForm((prev) => ({
+        ...prev,
+        advice: res.data.advice || ""
+      }));
+      toast.success("AI advice generated successfully!");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to generate AI advice.");
+    } finally {
+      setIsGeneratingAdvice(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -121,6 +176,7 @@ function WritePrescriptionWorkspace() {
       await createPrescription({
         appointmentId: appointmentId,
         diagnosis: prescriptionForm.diagnosis,
+        symptoms: prescriptionForm.symptoms,
         advice: formattedAdvice,
         medicines: prescriptionForm.medicines,
         recommendedTests: prescriptionForm.recommendedTests,
@@ -355,16 +411,28 @@ function WritePrescriptionWorkspace() {
             </h3>
 
             <div className="flex flex-col gap-4">
-              <div>
-                <label className="text-xs font-bold text-muted-foreground">Diagnosis</label>
-                <input 
-                  type="text" 
-                  required
-                  placeholder="e.g. Acute Tonsillitis / GERD / Migraine" 
-                  value={prescriptionForm.diagnosis}
-                  onChange={(e) => setPrescriptionForm({...prescriptionForm, diagnosis: e.target.value})}
-                  className="w-full bg-muted border border-border p-2.5 rounded-lg mt-1 text-xs text-foreground outline-none focus:border-primary"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground">Diagnosis (Disease Name)</label>
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="e.g. Acute Tonsillitis / GERD / Migraine" 
+                    value={prescriptionForm.diagnosis}
+                    onChange={(e) => setPrescriptionForm({...prescriptionForm, diagnosis: e.target.value})}
+                    className="w-full bg-muted border border-border p-2.5 rounded-lg mt-1 text-xs text-foreground outline-none focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-muted-foreground">Presented Symptoms</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Sore throat, difficulty swallowing, fever" 
+                    value={prescriptionForm.symptoms}
+                    onChange={(e) => setPrescriptionForm({...prescriptionForm, symptoms: e.target.value})}
+                    className="w-full bg-muted border border-border p-2.5 rounded-lg mt-1 text-xs text-foreground outline-none focus:border-primary"
+                  />
+                </div>
               </div>
 
               {/* Dynamic Medicine Input grid */}
@@ -383,15 +451,45 @@ function WritePrescriptionWorkspace() {
                 <div className="flex flex-col gap-2.5">
                   {prescriptionForm.medicines.map((med, idx) => (
                     <div key={idx} className="grid grid-cols-1 sm:grid-cols-12 gap-2 border-b border-border/40 pb-2.5 sm:border-b-0 sm:pb-0 items-center">
-                      <div className="sm:col-span-4">
+                      <div className="sm:col-span-4 relative">
                         <input 
                           type="text" 
                           required
                           placeholder="Medicine Name & Strength" 
                           value={med.name} 
-                          onChange={(e) => handleMedicineChange(idx, "name", e.target.value)}
+                          onChange={(e) => {
+                            handleMedicineChange(idx, "name", e.target.value);
+                            setFocusedMedIdx(idx);
+                          }}
+                          onFocus={() => setFocusedMedIdx(idx)}
+                          onBlur={() => {
+                            setTimeout(() => setFocusedMedIdx(null), 200);
+                          }}
                           className="w-full bg-muted border border-border p-2 rounded text-xs text-foreground outline-none focus:border-primary"
                         />
+                        {focusedMedIdx === idx && (
+                          <div className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-card border border-border rounded-lg shadow-lg z-50 text-[11px]">
+                            {COMMON_MEDICINES.filter((m) =>
+                              m.toLowerCase().includes(med.name.toLowerCase())
+                            ).slice(0, 8).map((suggestion, sIdx) => (
+                              <div
+                                key={sIdx}
+                                onMouseDown={() => {
+                                  handleMedicineChange(idx, "name", suggestion);
+                                  setFocusedMedIdx(null);
+                                }}
+                                className="px-3 py-2 hover:bg-primary hover:text-primary-foreground cursor-pointer text-left transition-colors font-medium text-foreground"
+                              >
+                                {suggestion}
+                              </div>
+                            ))}
+                            {COMMON_MEDICINES.filter((m) =>
+                              m.toLowerCase().includes(med.name.toLowerCase())
+                            ).length === 0 && (
+                              <div className="px-3 py-2 text-muted-foreground text-center">No matching medicines found</div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div className="sm:col-span-2">
                         <input 
@@ -472,12 +570,22 @@ function WritePrescriptionWorkspace() {
               {/* General Advice & Follow-Up */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 <div className="md:col-span-8">
-                  <label className="text-xs font-bold text-muted-foreground">General Advice & Lifestyle Instructions</label>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="text-xs font-bold text-muted-foreground">General Advice & Lifestyle Instructions</label>
+                    <button
+                      type="button"
+                      onClick={handleGenerateAIAdvice}
+                      disabled={isGeneratingAdvice}
+                      className="text-[11px] text-primary hover:text-primary/80 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-all"
+                    >
+                      {isGeneratingAdvice ? "Generating..." : "⚡ Generate AI Advice"}
+                    </button>
+                  </div>
                   <textarea 
                     placeholder="e.g. Bed rest for 2 days, avoid spicy meals, drink plenty of water." 
                     value={prescriptionForm.advice}
                     onChange={(e) => setPrescriptionForm({...prescriptionForm, advice: e.target.value})}
-                    className="w-full bg-muted border border-border p-2.5 rounded-lg mt-1 text-xs text-foreground h-16 outline-none focus:border-primary"
+                    className="w-full bg-muted border border-border p-2.5 rounded-lg text-xs text-foreground h-16 outline-none focus:border-primary"
                   />
                 </div>
                 <div className="md:col-span-4">
@@ -556,9 +664,17 @@ function WritePrescriptionWorkspace() {
 
               {/* Diagnosis header */}
               {prescriptionForm.diagnosis && (
-                <div className="mb-5">
-                  <span className="text-neutral-400 text-[8px] uppercase tracking-wider font-bold block mb-0.5">Primary Diagnosis</span>
-                  <span className="font-bold text-neutral-900 text-xs italic">“{prescriptionForm.diagnosis}”</span>
+                <div className="mb-5 flex flex-col gap-1 border-b border-neutral-100 pb-3">
+                  <div>
+                    <span className="text-neutral-400 text-[8px] uppercase tracking-wider font-bold block mb-0.5">Primary Diagnosis (Disease)</span>
+                    <span className="font-bold text-neutral-900 text-xs italic">“{prescriptionForm.diagnosis}”</span>
+                  </div>
+                  {prescriptionForm.symptoms && (
+                    <div className="mt-1.5">
+                      <span className="text-neutral-400 text-[8px] uppercase tracking-wider font-bold block mb-0.5">Presented Symptoms</span>
+                      <span className="font-semibold text-neutral-800 text-[10px]">{prescriptionForm.symptoms}</span>
+                    </div>
+                  )}
                 </div>
               )}
 
