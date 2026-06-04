@@ -54,26 +54,26 @@ export default function DepartmentCards({
         {currentItems.map((dept) => (
           <div
             key={dept._id}
-            className="bg-card border border-border hover:border-primary/50 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group"
+            className="bg-card border border-border hover:border-primary/50 rounded-2xl p-5 flex flex-col justify-between gap-4 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group h-[240px]"
           >
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-10 group-hover:bg-primary/10 transition-all duration-300" />
-            <div className="flex flex-col gap-2">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+            <div className="flex flex-col gap-2 overflow-hidden h-full">
+              <div className="flex items-start justify-between gap-4 shrink-0">
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <div className="p-2 bg-primary/10 rounded-lg text-primary shrink-0">
                     <Activity className="size-5" />
                   </div>
-                  <h3 className="font-bold text-lg text-foreground truncate max-w-[180px]">
+                  <h3 className="font-bold text-lg text-foreground truncate">
                     {dept.name}
                   </h3>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0 ${
                   dept.status === "Active" ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-800"
                 }`}>
                   {dept.status}
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed overflow-y-auto scrollbar-thin pr-2 pb-1 flex-1">
                 {dept.description || "No description provided."}
               </p>
             </div>

@@ -81,7 +81,7 @@ export function ThemeProvider({
 
     return (
       <ThemeProviderContext.Provider {...props} value={value}>
-        <body data-theme={`${storedTheme.color}-${systemMode}`}>
+        <body suppressHydrationWarning data-theme={`${storedTheme.color}-${systemMode}`}>
           {children}
           <Toaster expand visibleToasts={3} position="bottom-right" />
         </body>
@@ -92,6 +92,7 @@ export function ThemeProvider({
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} ${storedTheme.mode} antialiased `}
         data-theme={`${storedTheme.color}-${storedTheme.mode}`}
       >

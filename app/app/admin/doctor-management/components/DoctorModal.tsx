@@ -46,8 +46,8 @@ export default function DoctorModal({
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <form onSubmit={handleDoctorSubmit} className="bg-card border border-border p-6 rounded-2xl w-full max-w-lg shadow-lg flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex flex-col gap-1 border-b border-border pb-3">
+      <form onSubmit={handleDoctorSubmit} className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-lg flex flex-col h-[500px]">
+        <div className="flex flex-col gap-1 border-b border-border pb-3 p-6 shrink-0">
           <h3 className="font-bold text-lg text-foreground">
             {doctorForm.id ? "Edit Doctor Profile" : "Register Doctor Account"}
           </h3>
@@ -79,7 +79,7 @@ export default function DoctorModal({
         </div>
 
         {activeTab === "details" && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 p-6 flex-1 overflow-y-auto scrollbar-thin">
             <div className="text-xs font-bold uppercase tracking-wider text-primary">Credentials</div>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -207,7 +207,7 @@ export default function DoctorModal({
         )}
 
         {activeTab === "schedule" && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 p-6 flex-1 overflow-y-auto scrollbar-thin">
             <div className="text-xs font-bold uppercase tracking-wider text-primary">Availability Configuration</div>
             <div>
               <label className="text-xs font-bold text-muted-foreground">Schedule Type</label>
@@ -320,7 +320,7 @@ export default function DoctorModal({
           </div>
         )}
 
-        <div className="flex gap-3 justify-end mt-4 border-t border-border pt-4">
+        <div className="flex gap-3 justify-end mt-auto p-6 pt-4 border-t border-border shrink-0">
           <button
             type="button"
             onClick={() => setShowDoctorModal(false)}

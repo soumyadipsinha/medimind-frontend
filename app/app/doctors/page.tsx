@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Activity, LogOut } from "lucide-react";
 import DoctorPortal from "./components/DoctorPortal";
+import Loader from "@/components/Loader";
 import PageWrapper from "@/components/PageWrapper";
 
 import { getAppointments } from "@/services/appointment.services";
@@ -58,7 +59,7 @@ export default function DoctorsPage() {
   };
 
   if (loading || !user || user.role !== "doctor") {
-    return <div className="p-8 text-center text-muted-foreground">Loading workspace...</div>;
+    return <Loader fullScreen={false} />;
   }
 
   return (

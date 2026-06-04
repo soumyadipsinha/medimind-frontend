@@ -64,25 +64,25 @@ export default function AdminPortal({
                 <div className="text-xs font-semibold text-muted-foreground">{card.label}</div>
                 <div className="text-2xl font-black text-foreground mt-1">{card.val}</div>
               </div>
-              <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                <card.icon className="size-5" />
+              <div className="size-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <card.icon className="size-4" />
               </div>
             </div>
           ))}
         </div>
 
         {/* Quick Appointment approvals list */}
-        <div className="bg-card border border-border rounded-2xl p-6">
-          <h3 className="text-lg font-bold mb-4 text-foreground">Pending Appointments Action</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col h-[300px]">
+          <h3 className="text-lg font-bold mb-4 text-foreground shrink-0">Pending Appointments Action</h3>
+          <div className="overflow-y-auto overflow-x-auto scrollbar-thin pr-2 flex-1">
+            <table className="w-full text-left text-sm relative">
+              <thead className="sticky top-0 bg-card z-10">
                 <tr className="border-b border-border text-muted-foreground">
-                  <th className="pb-3">Patient</th>
-                  <th className="pb-3">Doctor</th>
-                  <th className="pb-3">Slot / Date</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3 text-right">Actions</th>
+                  <th className="pb-3 bg-card">Patient</th>
+                  <th className="pb-3 bg-card">Doctor</th>
+                  <th className="pb-3 bg-card">Slot / Date</th>
+                  <th className="pb-3 bg-card">Status</th>
+                  <th className="pb-3 text-right bg-card">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -109,17 +109,17 @@ export default function AdminPortal({
         </div>
 
         {/* Lab Test Reports Management */}
-        <div className="bg-card border border-border rounded-2xl p-6">
-          <h3 className="text-lg font-bold mb-4 text-foreground">Upload Laboratory / Imaging Reports</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
+        <div className="bg-card border border-border rounded-2xl p-6 flex flex-col h-[300px]">
+          <h3 className="text-lg font-bold mb-4 text-foreground shrink-0">Upload Laboratory / Imaging Reports</h3>
+          <div className="overflow-y-auto overflow-x-auto scrollbar-thin pr-2 flex-1">
+            <table className="w-full text-left text-sm relative">
+              <thead className="sticky top-0 bg-card z-10">
                 <tr className="border-b border-border text-muted-foreground">
-                  <th className="pb-3">Patient</th>
-                  <th className="pb-3">Test Name</th>
-                  <th className="pb-3">Price</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3 text-right">Upload Report</th>
+                  <th className="pb-3 bg-card">Patient</th>
+                  <th className="pb-3 bg-card">Test Name</th>
+                  <th className="pb-3 bg-card">Price</th>
+                  <th className="pb-3 bg-card">Status</th>
+                  <th className="pb-3 text-right bg-card">Upload Report</th>
                 </tr>
               </thead>
               <tbody>
@@ -269,7 +269,7 @@ export default function AdminPortal({
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-1 flex flex-col gap-3">
+          <div className="md:col-span-1 flex flex-col gap-3 h-[500px] overflow-y-auto scrollbar-thin pr-2">
             {patients.filter(p => !searchQuery || p.user?.name.toLowerCase().includes(searchQuery.toLowerCase())).map((pat) => (
               <button 
                 key={pat._id} 
@@ -287,18 +287,18 @@ export default function AdminPortal({
 
           <div className="md:col-span-2">
             {selectedPatientLog ? (
-              <div className="bg-card border border-border p-6 rounded-2xl flex flex-col gap-6">
-                <div>
+              <div className="bg-card border border-border p-6 rounded-2xl flex flex-col gap-4 h-[500px] overflow-hidden">
+                <div className="shrink-0 h-[80px]">
                   <h3 className="text-xl font-bold text-foreground">{selectedPatientLog.patient.user?.name}</h3>
-                  <p className="text-sm text-muted-foreground">{selectedPatientLog.patient.user?.email} | Age: {selectedPatientLog.patient.age} | Blood: {selectedPatientLog.patient.bloodGroup}</p>
-                  <div className="text-xs text-muted-foreground mt-2">Allergies: <span className="font-semibold text-destructive">{selectedPatientLog.patient.allergies}</span> | Diseases: <span className="font-semibold">{selectedPatientLog.patient.existingDiseases}</span></div>
+                  <p className="text-sm text-muted-foreground truncate">{selectedPatientLog.patient.user?.email} | Age: {selectedPatientLog.patient.age} | Blood: {selectedPatientLog.patient.bloodGroup}</p>
+                  <div className="text-xs text-muted-foreground mt-2 truncate">Allergies: <span className="font-semibold text-destructive">{selectedPatientLog.patient.allergies}</span> | Diseases: <span className="font-semibold">{selectedPatientLog.patient.existingDiseases}</span></div>
                 </div>
                 
-                <div className="border-t border-border pt-4">
-                  <h4 className="font-bold mb-3 text-foreground">Appointments History</h4>
-                  <div className="space-y-2">
+                <div className="border-t border-border pt-3 flex flex-col flex-1 min-h-0">
+                  <h4 className="font-bold mb-2 text-foreground shrink-0">Appointments History</h4>
+                  <div className="space-y-2 overflow-y-auto scrollbar-thin pr-2 flex-1">
                     {selectedPatientLog.appointments.map((a: any) => (
-                      <div key={a._id} className="text-xs p-2.5 rounded-lg border border-border flex justify-between items-center">
+                      <div key={a._id} className="text-xs p-2.5 rounded-lg border border-border flex justify-between items-center shrink-0">
                         <div>
                           <strong>Dr. {a.doctor?.user?.name}</strong> ({a.department?.name})
                           <div className="text-muted-foreground mt-0.5">{new Date(a.date).toLocaleDateString()} - {a.timeSlot}</div>
@@ -306,26 +306,32 @@ export default function AdminPortal({
                         <span className="font-semibold">{a.status}</span>
                       </div>
                     ))}
+                    {selectedPatientLog.appointments.length === 0 && (
+                      <div className="text-xs text-muted-foreground italic">No appointment history.</div>
+                    )}
                   </div>
                 </div>
 
-                <div className="border-t border-border pt-4">
-                  <h4 className="font-bold mb-3 text-foreground">Prescriptions Logs</h4>
-                  <div className="space-y-2">
+                <div className="border-t border-border pt-3 flex flex-col flex-1 min-h-0">
+                  <h4 className="font-bold mb-2 text-foreground shrink-0">Prescriptions Logs</h4>
+                  <div className="space-y-2 overflow-y-auto scrollbar-thin pr-2 flex-1">
                     {selectedPatientLog.prescriptions.map((p: any) => (
-                      <div key={p._id} className="text-xs p-3 rounded-lg border border-border">
+                      <div key={p._id} className="text-xs p-3 rounded-lg border border-border shrink-0">
                         <div className="flex justify-between">
                           <strong>Diagnosis: {p.diagnosis}</strong>
                           <a href={`/api/prescriptions/print/${p._id}`} target="_blank" className="text-primary font-bold">Print View</a>
                         </div>
-                        <div className="text-muted-foreground mt-1">Advice: {p.advice}</div>
+                        <div className="text-muted-foreground mt-1 break-words whitespace-pre-wrap">Advice: {p.advice}</div>
                       </div>
                     ))}
+                    {selectedPatientLog.prescriptions.length === 0 && (
+                      <div className="text-xs text-muted-foreground italic">No prescriptions issued.</div>
+                    )}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="h-48 border border-dashed border-border rounded-2xl flex items-center justify-center text-muted-foreground">Select a patient on the left to inspect complete medical logs</div>
+              <div className="h-[500px] border border-dashed border-border rounded-2xl flex items-center justify-center text-muted-foreground">Select a patient on the left to inspect complete medical logs</div>
             )}
           </div>
         </div>

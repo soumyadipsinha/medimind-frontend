@@ -271,21 +271,21 @@ export default function PatientPortal({
           {filteredDoctors.map((doc) => (
             <div
               key={doc._id}
-              className={`bg-card border rounded-2xl p-5 flex flex-col justify-between gap-5 transition-all shadow-sm hover:shadow-md ${
+              className={`bg-card border rounded-2xl p-5 flex flex-col justify-between gap-4 transition-all shadow-sm hover:shadow-md h-[280px] ${
                 bookingDoctorId === doc._id ? "border-primary bg-primary/5" : "border-border"
               }`}
             >
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-2 overflow-hidden h-full">
+                <div className="flex items-center gap-3 shrink-0">
                   <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
                     {doc.user?.name ? doc.user.name[0] : "D"}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-foreground text-base">Dr. {doc.user?.name}</h4>
-                    <span className="text-xs text-muted-foreground font-semibold">{doc.specialization}</span>
+                  <div className="overflow-hidden">
+                    <h4 className="font-bold text-foreground text-base truncate">Dr. {doc.user?.name}</h4>
+                    <span className="text-xs text-muted-foreground font-semibold truncate block">{doc.specialization}</span>
                   </div>
                 </div>
-                <div className="text-xs text-muted-foreground mt-1.5 flex flex-col gap-1">
+                <div className="text-xs text-muted-foreground mt-1.5 flex flex-col gap-1.5 overflow-y-auto pr-2 scrollbar-thin flex-1 pb-1">
                   <span>🎓 Qualification: {doc.qualification}</span>
                   <span>💼 Experience: {doc.experience} Years</span>
                   <span>💵 Consultation Fee: <span className="font-black text-primary">${doc.consultationFee}</span></span>
@@ -424,16 +424,16 @@ export default function PatientPortal({
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((ser) => (
-              <div key={ser._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between gap-4">
-                <div>
-                  <div className="flex justify-between items-start mb-2 gap-4">
-                    <h3 className="font-bold text-base text-foreground leading-snug">{ser.name}</h3>
-                    <span className="text-base font-black text-primary">${ser.price}</span>
+              <div key={ser._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between gap-4 h-[240px]">
+                <div className="flex flex-col overflow-hidden h-full">
+                  <div className="flex justify-between items-start mb-2 gap-4 shrink-0">
+                    <h3 className="font-bold text-base text-foreground leading-snug truncate">{ser.name}</h3>
+                    <span className="text-base font-black text-primary shrink-0">${ser.price}</span>
                   </div>
-                  <div className="text-xs text-muted-foreground mb-3 font-semibold uppercase tracking-wider">
+                  <div className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wider shrink-0 truncate">
                     {ser.departments && ser.departments.length > 0 ? ser.departments.map((d: any) => d.name).join(", ") : "General"}
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">{ser.description}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed overflow-y-auto scrollbar-thin pr-2 flex-1 pb-1">{ser.description}</p>
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-3">
                   <span className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -465,33 +465,36 @@ export default function PatientPortal({
         <h2 className="text-2xl font-black text-foreground">My Prescriptions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {prescriptions.map((pres) => (
-            <div key={pres._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between gap-4">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="p-2 bg-emerald-500/10 text-emerald-600 rounded-lg">
+            <div key={pres._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between gap-4 h-[300px]">
+              <div className="flex flex-col gap-2 overflow-hidden h-full">
+                <div className="flex items-center gap-2 mb-1 shrink-0">
+                  <div className="p-2 bg-emerald-500/10 text-emerald-600 rounded-lg shrink-0">
                     <FileText className="size-5" />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-foreground text-sm">Diagnosis: {pres.diagnosis}</h3>
-                    <span className="text-[10px] text-muted-foreground">{new Date(pres.createdAt || Date.now()).toLocaleDateString()}</span>
+                  <div className="overflow-hidden">
+                    <h3 className="font-bold text-foreground text-sm truncate">Diagnosis: {pres.diagnosis}</h3>
+                    <span className="text-[10px] text-muted-foreground block truncate">{new Date(pres.createdAt || Date.now()).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <div className="text-xs text-muted-foreground mt-2 flex flex-col gap-1 bg-muted/40 p-2.5 rounded-lg border border-border/55">
-                  <span>👨‍⚕️ Prescribed by: <strong className="text-foreground">Dr. {pres.doctor?.user?.name}</strong></span>
-                  {pres.advice && <span>Advice: <span className="text-foreground">{pres.advice}</span></span>}
-                  {pres.followUpDate && <span>📅 Follow Up: <span className="text-primary font-semibold">{new Date(pres.followUpDate).toLocaleDateString()}</span></span>}
-                </div>
-                {pres.medicines && pres.medicines.length > 0 && (
-                  <div className="flex flex-col gap-1.5 mt-2 bg-card p-3 rounded-lg border border-border/50">
-                    <span className="font-bold text-foreground text-xs border-b border-border pb-1">Prescribed Medicines:</span>
-                    {pres.medicines.map((m: any, idx: number) => (
-                      <div key={idx} className="text-xs text-muted-foreground flex justify-between gap-2">
-                        <span>💊 {m.name} ({m.dosage})</span>
-                        <span>{m.frequency} - {m.duration}</span>
-                      </div>
-                    ))}
+                
+                <div className="flex-1 overflow-y-auto scrollbar-thin pr-2 pb-1 flex flex-col gap-2">
+                  <div className="text-xs text-muted-foreground flex flex-col gap-1 bg-muted/40 p-2.5 rounded-lg border border-border/55">
+                    <span>👨‍⚕️ Prescribed by: <strong className="text-foreground">Dr. {pres.doctor?.user?.name}</strong></span>
+                    {pres.advice && <span>Advice: <span className="text-foreground">{pres.advice}</span></span>}
+                    {pres.followUpDate && <span>📅 Follow Up: <span className="text-primary font-semibold">{new Date(pres.followUpDate).toLocaleDateString()}</span></span>}
                   </div>
-                )}
+                  {pres.medicines && pres.medicines.length > 0 && (
+                    <div className="flex flex-col gap-1.5 bg-card p-3 rounded-lg border border-border/50">
+                      <span className="font-bold text-foreground text-xs border-b border-border pb-1">Prescribed Medicines:</span>
+                      {pres.medicines.map((m: any, idx: number) => (
+                        <div key={idx} className="text-xs text-muted-foreground flex justify-between gap-2 overflow-x-auto whitespace-nowrap scrollbar-thin pb-1">
+                          <span>💊 {m.name} ({m.dosage})</span>
+                          <span>{m.frequency} - {m.duration}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="border-t border-border/40 pt-3 mt-1 flex justify-end">
                 <a

@@ -41,8 +41,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setUser(null);
       }
-    } catch (err) {
-      console.error("Session fetch failed:", err);
+    } catch (err: any) {
+      if (err?.message !== "Unauthorized" && err?.message !== "Request failed with status code 401") {
+        console.error("Session fetch failed:", err);
+      }
       setUser(null);
     } finally {
       setLoading(false);

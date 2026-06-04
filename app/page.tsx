@@ -97,7 +97,6 @@ export default function Home() {
   // Load backend data
   useEffect(() => {
     if (user) {
-      // Redirect to correct subfolder route
       if (user.role === "admin") router.push("/app/admin");
       else if (user.role === "doctor") router.push("/app/doctors");
       else if (user.role === "patient") router.push("/app/patients");
@@ -444,70 +443,23 @@ export default function Home() {
 
   return (
     <div className="flex-1 flex flex-col bg-background min-h-screen">
-      {/* Navbar Header */}
-      <header className="border-b border-border bg-card/30 backdrop-blur sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="size-6 text-primary" />
-            <span className="font-bold text-xl tracking-tight text-foreground">MediMind</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Theme switcher */}
-            <div className="flex items-center gap-1.5 border border-border rounded-lg p-1 bg-card">
-              {(["gray", "blue", "green"] as const).map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setTheme({ mode: theme.mode, color: c })}
-                  className={`size-5 rounded-full ${
-                    c === "gray" ? "bg-slate-500" : c === "blue" ? "bg-blue-500" : "bg-emerald-500"
-                  } ring-offset-2 ring-primary ${theme.color === c ? "ring-2 scale-110" : ""}`}
-                />
-              ))}
-              <div className="w-px h-4 bg-border mx-1" />
-              <button 
-                onClick={() => setTheme({ color: theme.color, mode: theme.mode === "dark" ? "light" : "dark" })}
-                className="p-1 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
-              >
-                {theme.mode === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
-              </button>
-            </div>
-
-            {user ? (
-              <button
-                onClick={logout}
-                className="flex items-center gap-1.5 bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive/20 text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
-              >
-                <LogOut className="size-3.5" /> Logout
-              </button>
-            ) : (
-              <button
-                onClick={() => handleEnterPortal("patient", false)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm px-4 py-2 rounded-lg font-medium shadow-sm transition-all"
-              >
-                Enter Portal
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
       {/* Main Layout Area */}
-      {!user ? (
-        <LandingPage onEnterPortal={handleEnterPortal} />
-      ) : (
+      <LandingPage onEnterPortal={handleEnterPortal} />
+      
+      {/* We keep the old dashboard code hidden, as it's being migrated to subfolders */}
+      {false && user && (
         <div className="flex-grow flex">
           {/* Side Menu */}
           <aside className="w-64 border-r border-border bg-card/30 flex flex-col justify-between p-4 hidden md:flex">
             <div className="flex flex-col gap-6">
               <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-2">
-                {user.role} workspace
+                {user?.role} workspace
               </div>
               <nav className="flex flex-col gap-1">
                 <button onClick={() => setActivePortalTab("dashboard")} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${activePortalTab === "dashboard" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
                   <Activity className="size-4" /> Dashboard
                 </button>
-                {user.role === "admin" && (
+                {user?.role === "admin" && (
                   <>
                     <button onClick={() => setActivePortalTab("departments")} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${activePortalTab === "departments" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}><Plus className="size-4" /> Departments</button>
                     <button onClick={() => setActivePortalTab("services")} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${activePortalTab === "services" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}><Settings className="size-4" /> Clinic Services</button>
@@ -515,7 +467,7 @@ export default function Home() {
                     <button onClick={() => setActivePortalTab("patients")} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${activePortalTab === "patients" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}><Users className="size-4" /> Patients</button>
                   </>
                 )}
-                {user.role === "patient" && (
+                {user?.role === "patient" && (
                   <>
                     <button onClick={() => setActivePortalTab("book-appointment")} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${activePortalTab === "book-appointment" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}><Activity className="size-4" /> Book Appointment</button>
                     <button onClick={() => setActivePortalTab("book-test")} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${activePortalTab === "book-test" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}><Plus className="size-4" /> Book Lab Test</button>
@@ -528,7 +480,7 @@ export default function Home() {
 
           {/* Core Panel Content */}
           <main className="flex-1 p-6 overflow-y-auto max-w-5xl mx-auto w-full">
-            {user.role === "admin" && (
+            {user?.role === "admin" && (
               <AdminPortal 
                 activeTab={activePortalTab}
                 analytics={analytics}
@@ -565,7 +517,7 @@ export default function Home() {
               />
             )}
 
-            {user.role === "doctor" && (
+            {user?.role === "doctor" && (
               <DoctorPortal 
                 appointments={appointments}
                 prescriptionForm={prescriptionForm}
@@ -574,7 +526,7 @@ export default function Home() {
               />
             )}
 
-            {user.role === "patient" && (
+            {user?.role === "patient" && (
               <PatientPortal 
                 activeTab={activePortalTab}
                 appointments={appointments}

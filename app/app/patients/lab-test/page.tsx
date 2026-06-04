@@ -122,16 +122,16 @@ export default function LabTestPage() {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((ser) => (
-              <div key={ser._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between gap-4">
-                <div>
-                  <div className="flex justify-between items-start mb-2 gap-4">
-                    <h3 className="font-bold text-base text-foreground leading-snug">{ser.name}</h3>
-                    <span className="text-base font-black text-primary">${ser.price}</span>
+              <div key={ser._id} className="bg-card border border-border p-5 rounded-2xl shadow-sm flex flex-col justify-between gap-4 h-[240px]">
+                <div className="flex flex-col overflow-hidden h-full">
+                  <div className="flex justify-between items-start mb-2 gap-4 shrink-0">
+                    <h3 className="font-bold text-base text-foreground leading-snug truncate">{ser.name}</h3>
+                    <span className="text-base font-black text-primary shrink-0">${ser.price}</span>
                   </div>
-                  <div className="text-xs text-muted-foreground mb-3 font-semibold uppercase tracking-wider">
+                  <div className="text-xs text-muted-foreground mb-2 font-semibold uppercase tracking-wider shrink-0 truncate">
                     {ser.departments && ser.departments.length > 0 ? ser.departments.map((d: any) => d.name).join(", ") : "General"}
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">{ser.description}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed overflow-y-auto scrollbar-thin pr-2 flex-1 pb-1">{ser.description}</p>
                 </div>
                 <div className="flex items-center justify-between border-t border-border pt-3">
                   <span className="text-[10px] text-muted-foreground flex items-center gap-1">
