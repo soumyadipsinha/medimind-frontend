@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import PageWrapper from "@/components/PageWrapper";
+import { downloadReportPDF } from "@/utils/pdfGenerator";
 import PaymentSimulator from "../components/PaymentSimulator";
 import { getReports, bookLabTest } from "@/services/report.services";
 import { getClinicServices } from "@/services/clinicService.services";
@@ -107,13 +108,12 @@ export default function LabTestPage() {
                   </div>
                   {rep.fileUrl && (
                     <div className="border-t border-border/40 pt-3 mt-1 flex justify-end">
-                      <a
-                        href={rep.fileUrl}
-                        target="_blank"
-                        className="bg-primary/10 text-primary hover:bg-primary/20 text-xs px-3.5 py-1.5 rounded-lg font-bold inline-flex items-center gap-1.5"
+                      <button 
+                        onClick={(e) => { e.preventDefault(); downloadReportPDF(rep); }}
+                        className="bg-primary/10 text-primary hover:bg-primary/20 text-xs px-3 py-1.5 rounded flex items-center gap-1.5 transition-all w-full md:w-auto justify-center font-bold"
                       >
                         <FileDown className="size-3.5" /> Download Report
-                      </a>
+                      </button>
                     </div>
                   )}
                 </div>

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import PageWrapper from "@/components/PageWrapper";
+import { downloadPrescriptionPDF } from "@/utils/pdfGenerator";
 import { getPrescriptions } from "@/services/prescription.services";
 import { FileText, FileDown } from "lucide-react";
 
@@ -60,13 +61,12 @@ export default function PrescriptionListPage() {
                 </div>
               </div>
               <div className="border-t border-border/40 pt-3 mt-1 flex justify-end">
-                <a
-                  href={`/api/prescriptions/print/${pres._id}`}
-                  target="_blank"
+                <button
+                  onClick={(e) => { e.preventDefault(); downloadPrescriptionPDF(pres); }}
                   className="bg-primary/10 text-primary hover:bg-primary/20 text-xs px-3.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all"
                 >
                   <FileDown className="size-3.5" /> Download / Print PDF
-                </a>
+                </button>
               </div>
             </div>
           ))}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send, Check, CheckCheck } from "lucide-react";
 
 interface ChatSectionProps {
   chatUsers: any[];
@@ -89,7 +89,18 @@ export default function ChatSection({
                       isOwnMessage ? "bg-primary text-primary-foreground rounded-tr-none" : "bg-muted text-foreground rounded-tl-none"
                     }`}>
                       <div>{m.content}</div>
-                      <div className="text-[9px] text-right mt-1 opacity-70">{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                      <div className="flex items-center justify-end gap-1 text-[9px] text-right mt-1 opacity-70">
+                        {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {isOwnMessage && (
+                          <span className="ml-0.5">
+                            {m.isRead ? (
+                              <CheckCheck className="size-3 text-blue-300 dark:text-blue-200" />
+                            ) : (
+                              <Check className="size-3 text-white/70" />
+                            )}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
