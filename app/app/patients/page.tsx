@@ -5,6 +5,7 @@ import { getAppointments } from "@/services/appointment.services";
 import { getPrescriptions } from "@/services/prescription.services";
 import { getReports } from "@/services/report.services";
 import PageWrapper from "@/components/PageWrapper";
+import { downloadPrescriptionPDF, downloadReportPDF } from "@/utils/pdfGenerator";
 import { Calendar, FileText, FileDown, Pill } from "lucide-react";
 
 export default function PatientDashboard() {
@@ -96,13 +97,12 @@ export default function PatientDashboard() {
                               <span className="text-xs text-muted-foreground font-semibold">Diagnosis: {pres.diagnosis}</span>
                               <div className="text-xs text-foreground font-bold mt-0.5">Dr. {pres.doctor?.user?.name || "Physician"}</div>
                             </div>
-                            <a
-                              href={`/api/prescriptions/print/${pres._id}`}
-                              target="_blank"
+                            <button
+                              onClick={(e) => { e.preventDefault(); downloadPrescriptionPDF(pres); }}
                               className="text-[10px] text-primary bg-primary/10 hover:bg-primary/20 px-2 py-1 rounded font-bold transition-all"
                             >
                               Print RX
-                            </a>
+                            </button>
                           </div>
                           
                           <div className="flex flex-col gap-2">
@@ -148,13 +148,12 @@ export default function PatientDashboard() {
                           {pres.advice && <div className="text-xs text-muted-foreground mt-1 leading-relaxed">Advice: {pres.advice}</div>}
                         </div>
                         <div className="flex justify-end border-t border-border/40 pt-2.5">
-                          <a
-                            href={`/api/prescriptions/print/${pres._id}`}
-                            target="_blank"
-                            className="bg-primary/10 text-primary hover:bg-primary/20 text-xs px-3.5 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all"
+                          <button 
+                            onClick={(e) => { e.preventDefault(); downloadPrescriptionPDF(pres); }}
+                            className="bg-primary/10 text-primary hover:bg-primary/20 text-xs px-2.5 py-1.5 rounded font-bold flex items-center gap-1 transition-all"
                           >
-                            <FileDown className="size-3.5" /> Download / Print PDF
-                          </a>
+                            <FileDown className="size-3.5" /> PDF
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -197,11 +196,7 @@ export default function PatientDashboard() {
                       <td className="py-3 text-xs text-muted-foreground">{rep.notes || "No notes"}</td>
                       <td className="py-3 text-xs">{rep.completedAt ? new Date(rep.completedAt).toLocaleDateString() : "N/A"}</td>
                       <td className="py-3 text-right">
-                        {rep.fileUrl ? (
-                          <a href={rep.fileUrl} target="_blank" className="text-primary text-xs font-bold inline-flex items-center gap-1 hover:underline"><FileDown className="size-3.5" /> Download PDF</a>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">No file</span>
-                        )}
+                          <button onClick={(e) => { e.preventDefault(); downloadReportPDF(rep); }} className="text-primary text-xs font-bold inline-flex items-center gap-1 hover:underline"><FileDown className="size-3.5" /> Download PDF</button>
                       </td>
                     </tr>
                   ));

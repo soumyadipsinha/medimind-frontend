@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Users, UserCheck, Calendar, DollarSign, Upload, Plus, Edit3, Trash2, Search, FileDown } from "lucide-react";
+import { downloadPrescriptionPDF } from "@/utils/pdfGenerator";
 
 interface AdminPortalProps {
   activeTab: string;
@@ -319,7 +320,7 @@ export default function AdminPortal({
                       <div key={p._id} className="text-xs p-3 rounded-lg border border-border shrink-0">
                         <div className="flex justify-between">
                           <strong>Diagnosis: {p.diagnosis}</strong>
-                          <a href={`/api/prescriptions/print/${p._id}`} target="_blank" className="text-primary font-bold">Print View</a>
+                          <button onClick={(e) => { e.preventDefault(); downloadPrescriptionPDF(p); }} className="text-primary font-bold">Print View</button>
                         </div>
                         <div className="text-muted-foreground mt-1 break-words whitespace-pre-wrap">Advice: {p.advice}</div>
                       </div>

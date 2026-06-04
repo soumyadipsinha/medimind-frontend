@@ -23,12 +23,6 @@ export default function DoctorsPage() {
   });
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== "doctor")) {
-      router.push("/");
-    }
-  }, [user, loading, router]);
-
-  useEffect(() => {
     if (user && user.role === "doctor") {
       fetchAppointments();
     }
@@ -59,54 +53,12 @@ export default function DoctorsPage() {
     }
   };
 
-  if (loading || !user || user.role !== "doctor") {
-    return <Loader fullScreen={false} />;
-  }
-
   return (
-    <div className="flex-1 flex bg-background min-h-screen">
-      {/* Side Menu */}
-      <aside className="w-64 border-r border-border bg-card/30 flex flex-col justify-between p-4 hidden md:flex">
-        <div className="flex flex-col gap-6">
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-2">
-            Doctor workspace
-          </div>
-          <nav className="flex flex-col gap-1">
-            <button 
-              onClick={() => router.push("/app/doctors")}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground w-full text-left"
-            >
-              <Activity className="size-4" /> Schedule
-            </button>
-            <button 
-              onClick={() => router.push("/app/doctors/chat")}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full text-left transition-all"
-            >
-              <MessageSquare className="size-4" /> Live Chat
-            </button>
-          </nav>
-        </div>
-
-        {/* Logout Button in sidebar */}
-        <div className="border-t border-border pt-4">
-          <button
-            onClick={() => {
-              logout();
-              router.push("/");
-            }}
-            className="flex w-full items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-all"
-          >
-            <LogOut className="size-4" /> Logout
-          </button>
-        </div>
-      </aside>
-
-      {/* Doctor Content Panel */}
-      <main className="flex-grow p-6 overflow-y-auto w-full">
-        <PageWrapper
-          title="Practitioner Dashboard"
-          description="Manage patient appointments, diagnostics schedule, and generate medical prescriptions."
-        >
+    <>
+      <PageWrapper
+        title="Practitioner Dashboard"
+        description="Manage patient appointments, diagnostics schedule, and generate medical prescriptions."
+      >
           <DoctorPortal 
             appointments={appointments}
             prescriptionForm={prescriptionForm}
@@ -114,7 +66,6 @@ export default function DoctorsPage() {
             onSubmitPrescription={handlePrescriptionSubmit}
           />
         </PageWrapper>
-      </main>
-    </div>
+    </>
   );
 }

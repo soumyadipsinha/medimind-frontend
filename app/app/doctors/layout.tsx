@@ -1,39 +1,36 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
-import { Activity, Plus, Calendar, LogOut, FileText, MessageSquare, Menu } from "lucide-react";
+import { Activity, LogOut, MessageSquare, Menu } from "lucide-react";
 import Link from "next/link";
 import Loader from "@/components/Loader";
-import PatientChatbot from "./components/PatientChatbot";
 
-export default function PatientLayout({ children }: { children: React.ReactNode }) {
+export default function DoctorLayout({ children }: { children: React.ReactNode }) {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   useEffect(() => {
-    if (!loading && (!user || user.role !== "patient")) {
+    if (!loading && (!user || user.role !== "doctor")) {
       router.push("/");
     }
   }, [user, loading, router]);
 
-  if (loading || !user || user.role !== "patient") {
+  if (loading || !user || user.role !== "doctor") {
     return <Loader />;
   }
 
   const menuItems = [
-    { name: "Dashboard", href: "/app/patients", icon: Activity },
-    { name: "Book Appointment", href: "/app/patients/appointment", icon: Calendar },
-    { name: "Book Lab Test", href: "/app/patients/lab-test", icon: Plus },
-    { name: "Prescriptions", href: "/app/patients/prescription", icon: FileText },
-    { name: "Live Chat", href: "/app/patients/chat", icon: MessageSquare },
+    { name: "Schedule", href: "/app/doctors", icon: Activity },
+    { name: "Live Chat", href: "/app/doctors/chat", icon: MessageSquare },
   ];
 
   return (
-    <div className="flex-1 flex bg-background min-h-screen font-sans">
+    <div className="flex-1 flex bg-background min-h-screen font-sans bg-gradient-to-br from-cyan-50/40 via-background to-blue-50/20 dark:from-cyan-950/20 dark:via-background dark:to-blue-950/10">
       {/* Side Menu */}
-      <aside className={`border-r border-border/50 bg-card/40 backdrop-blur-sm flex flex-col justify-between hidden md:flex transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-[240px]" : "w-[68px]"}`}>
+      <aside className={`border-r border-border/50 bg-gradient-to-b from-card/80 to-cyan-50/30 dark:to-cyan-950/20 backdrop-blur-md flex flex-col justify-between hidden md:flex transition-all duration-300 ease-in-out shrink-0 shadow-[4px_0_24px_-12px_rgba(6,182,212,0.1)] ${isSidebarOpen ? "w-[240px]" : "w-[68px]"}`}>
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* Logo / Brand Area */}
           <div className="h-14 flex items-center px-4 border-b border-border/50 overflow-hidden shrink-0 whitespace-nowrap">
@@ -52,7 +49,7 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
 
           <div className={`p-4 flex flex-col gap-4 overflow-y-auto flex-1 whitespace-nowrap custom-scrollbar`}>
             <div className={`text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-2 transition-all duration-300 ${isSidebarOpen ? "opacity-100" : "opacity-0 h-0 hidden"}`}>
-              Patient workspace
+              Doctor workspace
             </div>
             <nav className="flex flex-col gap-1">
               {menuItems.map((item) => {
@@ -93,13 +90,12 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
         </div>
       </aside>
 
-      {/* Patient Content Panel */}
+      {/* Content Panel */}
       <main className="flex-grow flex flex-col min-w-0 bg-muted/10">
         <div className="p-6 overflow-y-auto w-full flex-1">
           {children}
         </div>
       </main>
-      <PatientChatbot />
     </div>
   );
 }

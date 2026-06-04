@@ -13,25 +13,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [isNavigating, setIsNavigating] = React.useState(false);
-
   useEffect(() => {
     if (!loading && (!user || user.role !== "admin")) {
       router.push("/");
     }
   }, [user, loading, router]);
 
-  const handleNavigate = (e: React.MouseEvent, href: string) => {
-    if (pathname === href) return;
-    e.preventDefault();
-    setIsNavigating(true);
-    setTimeout(() => {
-      router.push(href);
-      setIsNavigating(false);
-    }, 1000);
-  };
-
-  if (loading || !user || user.role !== "admin" || isNavigating) {
+  if (loading || !user || user.role !== "admin") {
     return <Loader />;
   }
 
@@ -55,9 +43,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex-1 flex bg-background min-h-screen font-sans">
       {/* Side Menu */}
       <aside className={`border-r border-border/50 bg-card/40 backdrop-blur-sm flex flex-col justify-between hidden md:flex transition-all duration-300 ease-in-out shrink-0 ${isSidebarOpen ? "w-[240px]" : "w-[68px]"}`}>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1 overflow-hidden">
           {/* Logo / Brand Area */}
-          <div className="h-14 flex items-center px-4 border-b border-border/50 overflow-hidden whitespace-nowrap">
+          <div className="h-14 flex items-center px-4 border-b border-border/50 overflow-hidden shrink-0 whitespace-nowrap">
             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className={`shrink-0 flex items-center justify-center p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-300 ${isSidebarOpen ? "mr-3" : "mx-auto"}`}>
               <div className={`flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${isSidebarOpen ? "-rotate-90" : "rotate-0"}`}>
                 <Menu className="size-4" />
@@ -71,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
           
-          <div className={`p-4 flex flex-col gap-4 overflow-hidden whitespace-nowrap`}>
+          <div className={`p-4 flex flex-col gap-4 overflow-y-auto flex-1 whitespace-nowrap custom-scrollbar`}>
             <div className={`text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-2 transition-all duration-300 ${isSidebarOpen ? "opacity-100" : "opacity-0 h-0 hidden"}`}>
               Admin Menu
             </div>
@@ -82,7 +70,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={(e) => handleNavigate(e, item.href)}
                     title={!isSidebarOpen ? item.name : undefined}
                     className={`flex items-center gap-3 py-2 rounded-md text-[13px] font-medium transition-colors ${isSidebarOpen ? "px-3" : "justify-center px-0"} ${
                       isActive

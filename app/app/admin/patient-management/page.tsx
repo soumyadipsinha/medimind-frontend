@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FileText, Calendar } from "lucide-react";
+import { downloadPrescriptionPDF } from "@/utils/pdfGenerator";
 import { getPatients, getPatientLogs } from "@/services/patient.services";
 import PageWrapper from "@/components/PageWrapper";
 import PatientTable from "./components/PatientTable";
@@ -155,7 +156,7 @@ export default function PatientManagementPage() {
                     <div key={p._id} className="text-xs p-3 rounded-lg border border-border bg-muted/30 flex flex-col gap-1.5">
                       <div className="flex justify-between items-center">
                         <strong className="text-foreground truncate max-w-[150px]">Diagnosis: {p.diagnosis}</strong>
-                        <a href={`/api/prescriptions/print/${p._id}`} target="_blank" className="text-primary hover:underline font-bold text-[10px]">Print View</a>
+                        <button onClick={(e) => { e.preventDefault(); downloadPrescriptionPDF(p); }} className="text-primary hover:underline font-bold text-[10px]">Print View</button>
                       </div>
                       <div className="text-muted-foreground leading-relaxed text-[11px] truncate">Advice: {p.advice}</div>
                     </div>
