@@ -6,6 +6,7 @@ import { getDepartments } from "@/services/department.services";
 import PageWrapper from "@/components/PageWrapper";
 import DoctorTable from "./components/DoctorTable";
 import DoctorModal from "./components/DoctorModal";
+import { toast } from "sonner";
 
 export default function DoctorManagementPage() {
   const [doctors, setDoctors] = useState<any[]>([]);
@@ -84,19 +85,21 @@ export default function DoctorManagementPage() {
   const handleDoctorSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (doctorForm.availableDays.length === 0) {
-      alert("Please select at least one available day / date.");
+      toast.warning("Please select at least one available day / date.");
       return;
     }
     try {
       if (doctorForm.id) {
         await updateDoctor(doctorForm.id, doctorForm);
+        toast.success("Doctor details updated successfully!");
       } else {
         await createDoctor(doctorForm);
+        toast.success("Doctor created successfully!");
       }
       fetchDoctors();
       setShowDoctorModal(false);
     } catch (err: any) {
-      alert(err.message || "Error saving doctor");
+      toast.error(err.message || "Error saving doctor");
     }
   };
 
@@ -104,9 +107,10 @@ export default function DoctorManagementPage() {
     if (confirm("Delete this doctor account?")) {
       try {
         await deleteDoctor(id);
+        toast.success("Doctor deleted successfully!");
         fetchDoctors();
       } catch (err: any) {
-        alert(err.message || "Error deleting doctor");
+        toast.error(err.message || "Error deleting doctor");
       }
     }
   };

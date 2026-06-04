@@ -8,6 +8,7 @@ import { getReports, uploadReportPDF } from "@/services/report.services";
 import { getAdminDashboardMetrics } from "@/services/analytics.services";
 
 import PageWrapper from "@/components/PageWrapper";
+import { toast } from "sonner";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -59,7 +60,7 @@ export default function AdminPage() {
       await updateAppointmentStatus(id, status);
       fetchAppointments();
     } catch (err: any) {
-      alert(err.message || "Error updating appointment status");
+      toast.error(err.message || "Error updating appointment status");
     }
   };
 
@@ -77,9 +78,9 @@ export default function AdminPage() {
       setReportUploadId(null);
       setReportFile(null);
       setReportNotes("");
-      alert("Report complete.");
+      toast.success("Report complete.");
     } catch (err: any) {
-      alert(err.message || "Error uploading report");
+      toast.error(err.message || "Error uploading report");
     }
   };
 

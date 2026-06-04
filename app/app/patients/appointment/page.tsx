@@ -7,6 +7,7 @@ import { getDepartments } from "@/services/department.services";
 import { getDoctors } from "@/services/doctor.services";
 import { verifyPayment } from "@/services/payment.services";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 // Modular Components
 import DepartmentTabs from "./components/DepartmentTabs";
@@ -80,7 +81,7 @@ export default function BookAppointmentPage() {
       setBookingDate("");
       setBookingSlot("");
     } catch (err: any) {
-      alert(err.message || "Booking conflict / error");
+      toast.error(err.message || "Booking conflict / error");
     }
   };
 
@@ -94,13 +95,13 @@ export default function BookAppointmentPage() {
         type: paymentData.type,
         amount: paymentData.amount
       });
-      alert("Payment completed successfully!");
+      toast.success("Payment completed successfully!");
       setPaymentData(null);
       setBookingDoctorId("");
       const apptData = await getAppointments(true);
       setAppointments(apptData);
     } catch (err: any) {
-      alert(err.message || "Payment verification failed");
+      toast.error(err.message || "Payment verification failed");
     }
   };
 

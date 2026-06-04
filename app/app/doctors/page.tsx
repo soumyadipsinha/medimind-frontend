@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { Activity, LogOut } from "lucide-react";
+import { Activity, LogOut, MessageSquare } from "lucide-react";
 import DoctorPortal from "./components/DoctorPortal";
 import Loader from "@/components/Loader";
 import PageWrapper from "@/components/PageWrapper";
 
 import { getAppointments } from "@/services/appointment.services";
 import { createPrescription } from "@/services/prescription.services";
+import { toast } from "sonner";
 
 export default function DoctorsPage() {
   const { user, logout, loading } = useAuth();
@@ -52,9 +53,9 @@ export default function DoctorsPage() {
         medicines: [{ name: "", dosage: "", frequency: "", duration: "" }],
         recommendedTests: [], followUpDate: ""
       });
-      alert("Prescription generated successfully!");
+      toast.success("Prescription generated successfully!");
     } catch (err: any) {
-      alert(err.message || "Error generating prescription");
+      toast.error(err.message || "Error generating prescription");
     }
   };
 
@@ -71,8 +72,17 @@ export default function DoctorsPage() {
             Doctor workspace
           </div>
           <nav className="flex flex-col gap-1">
-            <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground">
+            <button 
+              onClick={() => router.push("/app/doctors")}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground w-full text-left"
+            >
               <Activity className="size-4" /> Schedule
+            </button>
+            <button 
+              onClick={() => router.push("/app/doctors/chat")}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted w-full text-left transition-all"
+            >
+              <MessageSquare className="size-4" /> Live Chat
             </button>
           </nav>
         </div>

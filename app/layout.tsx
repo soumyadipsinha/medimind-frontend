@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SocketProvider } from "@/contexts/SocketContext";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import { DM_Sans, Noto_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -23,7 +25,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={cn("h-full", "font-sans", dmSans.variable, notoSansHeading.variable)}>
       <ThemeProvider>
         <AuthProvider>
-          {children}
+          <SocketProvider>
+            {children}
+            <Toaster position="top-right" richColors />
+          </SocketProvider>
         </AuthProvider>
       </ThemeProvider>
     </html>

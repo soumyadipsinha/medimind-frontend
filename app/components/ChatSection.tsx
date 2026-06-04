@@ -32,7 +32,7 @@ export default function ChatSection({
   }, [messages]);
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm h-[600px] flex">
+    <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-md flex-grow h-[calc(100vh-240px)] min-h-[550px] flex">
       {/* Users List Sidebar */}
       <div className="w-1/3 border-r border-border bg-muted/20 flex flex-col">
         <div className="p-4 border-b border-border font-bold text-foreground">Conversations</div>
@@ -57,7 +57,7 @@ export default function ChatSection({
               )}
             </button>
           ))}
-          {chatUsers.length === 0 && <div className="text-xs text-muted-foreground text-center py-12">No active conversation partners. You can chat once an appointment is active/confirmed.</div>}
+          {chatUsers.length === 0 && <div className="text-xs text-muted-foreground text-center py-12">No active conversation partners. You can chat once you have a scheduled appointment or a previous consultation.</div>}
         </div>
       </div>
 
@@ -78,16 +78,22 @@ export default function ChatSection({
 
             {/* Messages scroll content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {messages.map((m, i) => (
-                <div key={i} className={`flex ${m.sender === currentUser.id ? "justify-end" : "justify-start"}`}>
-                  <div className={`p-3 rounded-2xl max-w-xs text-sm shadow-sm ${
-                    m.sender === currentUser.id ? "bg-primary text-primary-foreground rounded-tr-none" : "bg-muted text-foreground rounded-tl-none"
-                  }`}>
-                    <div>{m.content}</div>
-                    <div className="text-[9px] text-right mt-1 opacity-70">{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+              {messages.map((m, i) => {
+                const senderId = typeof m.sender === "object" ? m.sender?._id : m.sender;
+                const currentUserId = currentUser?.id || currentUser?._id;
+                const isOwnMessage = senderId?.toString() === currentUserId?.toString();
+
+                return (
+                  <div key={i} className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}>
+                    <div className={`p-3 rounded-2xl max-w-xs text-sm shadow-sm ${
+                      isOwnMessage ? "bg-primary text-primary-foreground rounded-tr-none" : "bg-muted text-foreground rounded-tl-none"
+                    }`}>
+                      <div>{m.content}</div>
+                      <div className="text-[9px] text-right mt-1 opacity-70">{new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <div ref={messagesEndRef} />
             </div>
 

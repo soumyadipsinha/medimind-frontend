@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { XCircle } from "lucide-react";
 import { login as authLogin, register as authRegister } from "@/services/auth.services";
+import { toast } from "sonner";
 
 interface AuthModalProps {
   onClose: () => void;
@@ -30,7 +31,7 @@ export default function AuthModal({ onClose, defaultRole = "patient", defaultTab
       onLoginSuccess(data.user);
       onClose();
     } catch (err: any) {
-      alert(err.message || "Login failed");
+      toast.error(err.message || "Login failed");
     }
   };
 
@@ -41,7 +42,7 @@ export default function AuthModal({ onClose, defaultRole = "patient", defaultTab
       onLoginSuccess(data.user);
       onClose();
     } catch (err: any) {
-      alert(err.message || "Registration failed");
+      toast.error(err.message || "Registration failed");
     }
   };
 

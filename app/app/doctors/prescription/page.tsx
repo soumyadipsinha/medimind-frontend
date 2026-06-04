@@ -8,6 +8,7 @@ import { getAppointments, bookAppointment } from "@/services/appointment.service
 import { createPrescription } from "@/services/prescription.services";
 import { getClinicServices } from "@/services/clinicService.services";
 import { ArrowLeft, Plus, Trash2, Printer, CheckCircle, FileText, Activity, AlertCircle, Heart, User, Clipboard, Calendar } from "lucide-react";
+import { toast } from "sonner";
 
 function WritePrescriptionWorkspace() {
   const router = useRouter();
@@ -54,7 +55,7 @@ function WritePrescriptionWorkspace() {
       const activeAppt = appts.find((a: any) => a._id === appointmentId);
       
       if (!activeAppt) {
-        alert("Appointment not found!");
+        toast.error("Appointment not found!");
         router.push("/app/doctors");
         return;
       }
@@ -126,10 +127,10 @@ function WritePrescriptionWorkspace() {
         followUpDate: prescriptionForm.followUpDate
       });
 
-      alert("Digital Prescription generated and saved successfully!");
+      toast.success("Digital Prescription generated and saved successfully!");
       router.push("/app/doctors");
     } catch (err: any) {
-      alert(err.message || "Failed to save prescription. Check fields.");
+      toast.error(err.message || "Failed to save prescription. Check fields.");
     }
   };
 
