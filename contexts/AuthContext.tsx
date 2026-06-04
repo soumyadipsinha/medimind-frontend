@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { toast } from "sonner";
 
 type User = {
   id: string;
@@ -70,8 +71,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authLogout();
       setUser(null);
+      toast.success("Successfully logged out");
     } catch (err) {
       console.error("Logout failed:", err);
+      toast.error("Logout failed");
     }
   };
 

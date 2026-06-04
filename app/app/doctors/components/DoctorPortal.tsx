@@ -125,7 +125,7 @@ export default function DoctorPortal({
             <div className="text-xs text-muted-foreground mb-3 font-semibold">
               Showing schedule for {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto custom-scrollbar pr-2">
               {activeAppts.map((apt) => (
                 <div
                   key={apt._id}
@@ -162,7 +162,7 @@ export default function DoctorPortal({
             <h3 className="font-bold text-lg mb-4 text-foreground flex items-center gap-2">
               <Plus className="size-5 text-emerald-500" /> Completed Consultations (Completion Section)
             </h3>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto custom-scrollbar pr-2">
               {completedAppts.map((apt) => (
                 <div
                   key={apt._id}

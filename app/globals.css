@@ -383,6 +383,16 @@
     @apply bg-background text-foreground;
   }
 
+  button, 
+  a, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="reset"] {
+    cursor: pointer !important;
+  }
+
+
   @keyframes bell-ring {
     0% {
       transform: rotate(0);

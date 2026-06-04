@@ -29,6 +29,7 @@ export default function AuthModal({ onClose, defaultRole = "patient", defaultTab
     try {
       const data = await authLogin({ email: loginEmail, password: loginPassword });
       onLoginSuccess(data.user);
+      toast.success("Successfully logged in!");
       onClose();
     } catch (err: any) {
       toast.error(err.message || "Login failed");
@@ -40,6 +41,7 @@ export default function AuthModal({ onClose, defaultRole = "patient", defaultTab
     try {
       const data = await authRegister(registerForm);
       onLoginSuccess(data.user);
+      toast.success("Patient registered successfully!");
       onClose();
     } catch (err: any) {
       toast.error(err.message || "Registration failed");
