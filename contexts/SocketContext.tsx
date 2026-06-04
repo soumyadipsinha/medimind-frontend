@@ -8,7 +8,7 @@ import {
   ReactNode,
 } from "react";
 import { io, Socket } from "socket.io-client";
-import useAuthStore from "./useAuthStore";
+import { useAuth } from "./AuthContext";
 import { toast } from "sonner";
 import { BellRing } from "lucide-react";
 
@@ -27,7 +27,8 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { isAuthenticated, user } = useAuthStore();
+  const { user, loading } = useAuth();
+  const isAuthenticated = !loading && user !== null;
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {

@@ -6,6 +6,7 @@ import { getReports, bookLabTest } from "@/services/report.services";
 import { getClinicServices } from "@/services/clinicService.services";
 import { verifyPayment } from "@/services/payment.services";
 import { Clock, FileDown, ClipboardCheck } from "lucide-react";
+import { toast } from "sonner";
 
 export default function LabTestPage() {
   const [reports, setReports] = useState<any[]>([]);
@@ -39,7 +40,7 @@ export default function LabTestPage() {
         referenceId: data.report._id
       });
     } catch (err: any) {
-      alert(err.message || "Error booking test");
+      toast.error(err.message || "Error booking test");
     }
   };
 
@@ -53,11 +54,11 @@ export default function LabTestPage() {
         type: paymentData.type,
         amount: paymentData.amount
       });
-      alert("Payment completed successfully!");
+      toast.success("Payment completed successfully!");
       setPaymentData(null);
       fetchLabData();
     } catch (err: any) {
-      alert(err.message || "Payment verification failed");
+      toast.error(err.message || "Payment verification failed");
     }
   };
 

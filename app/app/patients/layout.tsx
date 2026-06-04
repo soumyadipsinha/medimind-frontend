@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
-import { Activity, Plus, Calendar, LogOut, FileText } from "lucide-react";
+import { Activity, Plus, Calendar, LogOut, FileText, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
 export default function PatientLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +25,7 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
     { name: "Book Appointment", href: "/app/patients/appointment", icon: Calendar },
     { name: "Book Lab Test", href: "/app/patients/lab-test", icon: Plus },
     { name: "Prescriptions", href: "/app/patients/prescription", icon: FileText },
+    { name: "Live Chat", href: "/app/patients/chat", icon: MessageSquare },
   ];
 
   return (

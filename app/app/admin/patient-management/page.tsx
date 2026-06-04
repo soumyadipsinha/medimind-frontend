@@ -4,6 +4,7 @@ import { FileText, Calendar } from "lucide-react";
 import { getPatients, getPatientLogs } from "@/services/patient.services";
 import PageWrapper from "@/components/PageWrapper";
 import PatientTable from "./components/PatientTable";
+import { toast } from "sonner";
 
 export default function PatientManagementPage() {
   const [patients, setPatients] = useState<any[]>([]);
@@ -35,7 +36,7 @@ export default function PatientManagementPage() {
       const data = await getPatientLogs(id);
       setSelectedPatientLog(data);
     } catch (err: any) {
-      alert(err.message || "Error fetching patient logs");
+      toast.error(err.message || "Error fetching patient logs");
     }
   };
 

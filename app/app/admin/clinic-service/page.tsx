@@ -5,6 +5,7 @@ import { getClinicServices, createClinicService, updateClinicService, deleteClin
 import { getDepartments } from "@/services/department.services";
 import PageWrapper from "@/components/PageWrapper";
 import ClinicServiceTable from "./components/ClinicServiceTable";
+import { toast } from "sonner";
 
 export default function ClinicServicePage() {
   const [services, setServices] = useState<any[]>([]);
@@ -61,20 +62,22 @@ export default function ClinicServicePage() {
   const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (serviceForm.departments.length === 0) {
-      alert("Please select at least one department.");
+      toast.warning("Please select at least one department.");
       return;
     }
     try {
       if (serviceForm.id) {
         await updateClinicService(serviceForm.id, serviceForm);
+        toast.success("Service updated successfully!");
       } else {
         await createClinicService(serviceForm);
+        toast.success("Service created successfully!");
       }
       fetchServices();
       setShowServiceModal(false);
       setServiceForm({ id: "", name: "", departments: [], price: "", description: "", reportDeliveryTime: "24 Hours" });
     } catch (err: any) {
-      alert(err.message || "Error saving service");
+      toast.error(err.message || "Error saving service");
     }
   };
 
@@ -82,9 +85,10 @@ export default function ClinicServicePage() {
     if (confirm("Delete this test/service?")) {
       try {
         await deleteClinicService(id);
+        toast.success("Service deleted successfully!");
         fetchServices();
       } catch (err: any) {
-        alert(err.message || "Error deleting service");
+        toast.error(err.message || "Error deleting service");
       }
     }
   };

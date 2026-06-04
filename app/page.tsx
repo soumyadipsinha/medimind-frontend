@@ -5,6 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useRouter } from "next/navigation";
 import { Activity, LogOut, Sun, Moon, Palette, Plus, Upload, XCircle, Settings, Users, MessageCircle } from "lucide-react";
 import { io } from "socket.io-client";
+import { toast } from "sonner";
 
 // Import custom subcomponents
 import LandingPage from "./components/LandingPage";
@@ -128,7 +129,7 @@ export default function Home() {
       });
 
       sk.on("error", (err: any) => {
-        alert(err.message || "Chat error");
+        toast.error(err.message || "Chat error");
       });
 
       return () => {
@@ -241,7 +242,7 @@ export default function Home() {
       setShowDeptModal(false);
       setDeptForm({ id: "", name: "", description: "", status: "Active" });
     } catch (err: any) {
-      alert(err.message || "Error saving department");
+      toast.error(err.message || "Error saving department");
     }
   };
 
@@ -251,7 +252,7 @@ export default function Home() {
         await deleteDepartment(id);
         fetchDepartments();
       } catch (err: any) {
-        alert(err.message || "Error deleting department");
+        toast.error(err.message || "Error deleting department");
       }
     }
   };
@@ -268,7 +269,7 @@ export default function Home() {
       setShowServiceModal(false);
       setServiceForm({ id: "", name: "", department: "", price: "", description: "", reportDeliveryTime: "24 Hours" });
     } catch (err: any) {
-      alert(err.message || "Error saving service");
+      toast.error(err.message || "Error saving service");
     }
   };
 
@@ -278,7 +279,7 @@ export default function Home() {
         await deleteClinicService(id);
         fetchServices();
       } catch (err: any) {
-        alert(err.message || "Error deleting service");
+        toast.error(err.message || "Error deleting service");
       }
     }
   };
@@ -298,7 +299,7 @@ export default function Home() {
         experience: "", registrationNumber: "", consultationFee: "", startTime: "09:00", endTime: "17:00", maxPatientsPerDay: "15", bio: "", avatarUrl: ""
       });
     } catch (err: any) {
-      alert(err.message || "Error saving doctor");
+      toast.error(err.message || "Error saving doctor");
     }
   };
 
@@ -308,7 +309,7 @@ export default function Home() {
         await serviceDeleteDoctor(id);
         fetchDoctors();
       } catch (err: any) {
-        alert(err.message || "Error deleting doctor");
+        toast.error(err.message || "Error deleting doctor");
       }
     }
   };
@@ -333,7 +334,7 @@ export default function Home() {
       setBookingDate("");
       setBookingSlot("");
     } catch (err: any) {
-      alert(err.message || "Booking conflict / error");
+      toast.error(err.message || "Booking conflict / error");
     }
   };
 
@@ -342,7 +343,7 @@ export default function Home() {
       await updateAppointmentStatus(id, status);
       fetchAppointments();
     } catch (err: any) {
-      alert(err.message || "Error updating appointment status");
+      toast.error(err.message || "Error updating appointment status");
     }
   };
 
@@ -357,7 +358,7 @@ export default function Home() {
         referenceId: data.report._id
       });
     } catch (err: any) {
-      alert(err.message || "Error booking test");
+      toast.error(err.message || "Error booking test");
     }
   };
 
@@ -372,13 +373,13 @@ export default function Home() {
         type: paymentData.type,
         amount: paymentData.amount
       });
-      alert("Payment verified successfully!");
+      toast.success("Payment verified successfully!");
       setPaymentData(null);
       fetchAppointments();
       fetchReports();
       if (user?.role === "admin") fetchAdminAnalytics();
     } catch (err: any) {
-      alert(err.message || "Payment verification failed");
+      toast.error(err.message || "Payment verification failed");
     }
   };
 
@@ -394,9 +395,9 @@ export default function Home() {
         medicines: [{ name: "", dosage: "", frequency: "", duration: "" }],
         recommendedTests: [], followUpDate: ""
       });
-      alert("Prescription generated!");
+      toast.success("Prescription generated!");
     } catch (err: any) {
-      alert(err.message || "Error creating prescription");
+      toast.error(err.message || "Error creating prescription");
     }
   };
 
@@ -415,9 +416,9 @@ export default function Home() {
       setReportUploadId(null);
       setReportFile(null);
       setReportNotes("");
-      alert("Report complete.");
+      toast.success("Report complete.");
     } catch (err: any) {
-      alert(err.message || "Error uploading report");
+      toast.error(err.message || "Error uploading report");
     }
   };
 
@@ -438,7 +439,7 @@ export default function Home() {
       const data = await getPatientLogs(id);
       setSelectedPatientLog(data);
     } catch (err: any) {
-      alert(err.message || "Error fetching patient logs");
+      toast.error(err.message || "Error fetching patient logs");
     }
   };
 

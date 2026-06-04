@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { getDepartments, createDepartment, updateDepartment, deleteDepartment } from "@/services/department.services";
 import PageWrapper from "@/components/PageWrapper";
 import DepartmentCards from "./components/DepartmentCards";
+import { toast } from "sonner";
 
 export default function DepartmentPage() {
   const [departments, setDepartments] = useState<any[]>([]);
@@ -39,12 +40,13 @@ export default function DepartmentPage() {
         await updateDepartment(deptForm.id, deptForm);
       } else {
         await createDepartment(deptForm);
+        toast.success("Department saved successfully!");
       }
       fetchDepartments();
       setShowDeptModal(false);
       setDeptForm({ id: "", name: "", description: "", status: "Active" });
     } catch (err: any) {
-      alert(err.message || "Error saving department");
+      toast.error(err.message || "Error saving department");
     }
   };
 
@@ -52,9 +54,10 @@ export default function DepartmentPage() {
     if (confirm("Delete this department?")) {
       try {
         await deleteDepartment(id);
+        toast.success("Department deleted successfully!");
         fetchDepartments();
       } catch (err: any) {
-        alert(err.message || "Error deleting department");
+        toast.error(err.message || "Error deleting department");
       }
     }
   };
